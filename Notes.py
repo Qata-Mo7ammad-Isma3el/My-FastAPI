@@ -1,4 +1,30 @@
 
+#!------------------ Some basic Terms ------------------!#
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+# 3. Pydantic Model for Request Body Data
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: bool | None = None
+
+# 1. The Application Instance
+app = FastAPI()
+
+#> 2. Route Decorator (Path Operation)
+#    GET request to the root path "/"
+@app.get("/")
+def read_root(): #> (Path Operation Function)
+    # 4. Return Value (sent as a JSON response)
+    return {"Hello": "World"}
+
+# 2. Route Decorator for POST request with a Path Parameter
+@app.post("/items/{item_id}") 
+# 3. Path Parameter (item_id) and Request Body (item)
+def create_item(item_id: int, item: Item):
+    return {"item_id": item_id, "item_name": item.name}
+
 #!------------------ What is model_dump? ------------------!#
 '''
 #? What is model_dump?
@@ -278,3 +304,36 @@ async def update_user_profile(
         "email_saved": profile_data.email,
         "avatar_filename": avatar.filename if avatar else "No file"
     }
+
+#!------------------ Packing and Unpacking Arguments in Python ------------------!#
+
+## Packing
+#> 1. Packing with *args
+def sample(*args):
+    print("Packed arguments:", args)
+sample(1, 2, 3, 4, "geeks for geeks")
+
+#> 2. Packing with **kwargs
+def sample(**kwargs):
+    print("Packed keyword arguments:", kwargs)
+sample(name="Anaya", age=25, country="India")
+
+#!Note: The * operator packs positional arguments into a tuple, while ** packs keyword arguments into a dictionary.
+
+## Unpacking
+#> 1. Unpacking a List/Tuple with *
+def addition(a, b, c):
+    return a + b + c
+
+num = (1, 5, 10)  
+result = addition(*num) 
+print("Sum:", result)
+
+#> 2. Unpacking a Dictionary with **
+def info(name, age, country):
+    print(f"Name: {name}, Age: {age}, Country: {country}")
+
+data = {"name": "geeks for geeks", "age": 30, "country": "India"}
+info(**data)
+
+#! Note: The * operator unpacks lists/tuples into positional arguments, while ** unpacks dictionaries into keyword arguments.
